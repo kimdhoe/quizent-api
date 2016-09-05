@@ -10,4 +10,4 @@ const QuizSchema =
               }
             )
 
-module.exports = mongoose.model('post', QuizSchema)
+module.exports = mongoose.model('quiz', QuizSchema)

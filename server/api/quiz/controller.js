@@ -11,6 +11,7 @@ const index = (req, res, next) => {
 
 const create = (req, res, next) => {
   const newQuiz = req.body
+  console.log(newQuiz)
 
   newQuiz.author = req.user._id
 
