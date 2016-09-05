@@ -8,6 +8,7 @@ const QuizSchema =
                           }
               , author: { type: Schema.Types.ObjectId, ref: 'user' }
               }
+            , { timestamps: true }
             )
 
 module.exports = mongoose.model('quiz', QuizSchema)

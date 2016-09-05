@@ -17,7 +17,9 @@ const create = (req, res, next) => {
 
   Quiz
     .create(newQuiz)
-    .then(quiz => res.json(quiz))
+    .then(quiz => {
+      res.json(quiz)
+    })
     .catch(err => {
       logError(err)
       next(err)
