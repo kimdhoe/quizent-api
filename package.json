@@ -1,0 +1,30 @@
+{
+  "name": "auth-example-api",
+  "version": "0.0.1",
+  "description": "API for JWT-based authentication example",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon --watch src --exec babel-node -- src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "kimdhoe <kimdhoe1@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^0.8.7",
+    "body-parser": "^1.15.2",
+    "colors": "^1.1.2",
+    "cors": "^2.8.0",
+    "express": "^4.14.0",
+    "express-jwt": "^3.4.0",
+    "jsonwebtoken": "^7.1.9",
+    "lodash": "^4.15.0",
+    "method-override": "^2.3.6",
+    "mongoose": "^4.6.0",
+    "morgan": "^1.7.0",
+    "node-uuid": "^1.4.7",
+    "shortid": "^2.2.6",
+    "validator": "^5.6.0"
+  }
+}
