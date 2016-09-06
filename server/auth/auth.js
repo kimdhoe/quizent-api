@@ -36,7 +36,7 @@ const getUser = () => (req, res, next) => {
         res.status(401).json({ error: 'No such user.' })
       }
       else {
-        req.user = pick(user, [ '_id', 'username', 'email' ])
+        req.user = user
         next()
       }
     })
@@ -57,8 +57,7 @@ const verifyUser = () => (req, res, next) => {
             )
     .then(user => {
       if (user && authenticateUser(user, password)) {
-        req.user = pick(user, [ '_id', 'username', 'email' ])
-        console.log(req.user)
+        req.user = user
         next()
       }
       else
