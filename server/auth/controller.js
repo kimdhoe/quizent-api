@@ -1,3 +1,5 @@
+const pick = require('lodash/pick')
+
 const { signToken } = require('./auth')
 
 const login = (req, res) => {

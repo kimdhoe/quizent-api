@@ -20,6 +20,11 @@ const UserSchema = new Schema( { username: { type:     String
                                , password: { type:     String
                                            , required: true
                                            }
+
+                               , following: [ { type: Schema.Types.ObjectId
+                                              , ref:  'user'
+                                              }
+                                            ]
                                }
                              , { timestamps: true }
                              )

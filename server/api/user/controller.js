@@ -10,7 +10,10 @@ const index = (req, res, next) => {
     .select('_id username fullname')
     .sort({ createdAt: -1 })
     .then(users => {
-      res.json({ users })
+      res.json({ users
+               , currentUserId: req.user._id
+               }
+              )
     })
     .catch(err => next(err))
 }
