@@ -5,10 +5,10 @@ const { index, create }        = require('./controller')
 
 const router = express.Router()
 
-const checkuser = [ decodeToken(), getUser() ]
+const checkUser = [ decodeToken(), getUser() ]
 
 router.route('/')
-  .get(index)
-  .post(checkuser, create)
+  .get(checkUser, index)
+  .post(checkUser, create)
 
 module.exports = router
