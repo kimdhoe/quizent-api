@@ -7,7 +7,7 @@ const { signToken } = require('../../auth/auth')
 
 const index = (req, res, next) => {
   User.find()
-    .select('_id username')
+    .select('_id username fullname')
     .sort({ createdAt: -1 })
     .then(users => {
       res.json({ users })

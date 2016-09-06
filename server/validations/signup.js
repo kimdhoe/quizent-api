@@ -1,7 +1,7 @@
 const validator = require('validator')
 const isEmpty   = require('lodash/isEmpty')
 
-const validate = ({ username, email, password, passwordConfirmation }) => {
+const validate = ({ username, fullname, email, password, passwordConfirmation }) => {
   const errors = {}
 
   if (validator.isNull(username))
