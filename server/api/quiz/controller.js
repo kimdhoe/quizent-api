@@ -9,7 +9,7 @@ const index = (req, res, next) => {
           }
          )
     .populate({ path:   'author'
-              , select: { _id: 1, username: 1 }
+              , select: { _id: 1, username: 1, fullname: 1 }
               }
              )
     .sort({ createdAt: -1 })
