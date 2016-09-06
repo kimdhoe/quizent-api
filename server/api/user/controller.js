@@ -43,9 +43,14 @@ const create = (req, res, next) => {
   validateUserData(req.body)
     .then(({ errors, isValid }) => {
       if (isValid) {
-        const { username, email, password } = req.body
+        const { username, fullname, email, password } = req.body
         const passwordDigest = bcrypt.hashSync(password, 10)
-        const newUser = new User({ username, email, password: passwordDigest })
+        const newUser = new User({ username
+                                 , fullname
+                                 , email
+                                 , password: passwordDigest
+                                 }
+                                )
 
         newUser
           .save()
