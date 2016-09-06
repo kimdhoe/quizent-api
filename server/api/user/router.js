@@ -1,9 +1,12 @@
 const express = require('express')
 
-const { create } = require('./controller')
+const { decodeToken, getUser } = require('../../auth/auth')
+const { index, create }        = require('./controller')
 
 const router = express.Router()
 
-router.post('/', create)
+router.route('/')
+  .get(decodeToken(), getUser(), index)
+  .post(create)
 
 module.exports = router

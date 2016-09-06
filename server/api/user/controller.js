@@ -5,6 +5,15 @@ const bcrypt = require('bcrypt')
 const validate      = require('../../validations/signup')
 const { signToken } = require('../../auth/auth')
 
+const index = (req, res, next) => {
+  User.find()
+    .select('_id username')
+    .then(users => {
+      res.json({ users })
+    })
+    .catch(err => next(err))
+}
+
 const validateUserData = data => {
   const { errors } = validate(data)
 
@@ -46,4 +55,4 @@ const create = (req, res, next) => {
     })
 }
 
-module.exports = { create }
+module.exports = { index, create }
