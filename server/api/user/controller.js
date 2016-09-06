@@ -8,6 +8,7 @@ const { signToken } = require('../../auth/auth')
 const index = (req, res, next) => {
   User.find()
     .select('_id username')
+    .sort({ createdAt: -1 })
     .then(users => {
       res.json({ users })
     })
@@ -48,7 +49,12 @@ const create = (req, res, next) => {
 
         newUser
           .save()
-          .then(user => res.json({ token: signToken(user._id) }))
+          .then(user => {
+            res.json({ token:    signToken(user._id)
+                     , username: user.username
+                     }
+                    )
+          })
           .catch(err => next(err))
       }
       else res.status(400).json(errors)
