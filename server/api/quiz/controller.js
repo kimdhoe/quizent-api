@@ -15,7 +15,6 @@ const index = (req, res, next) => {
     .sort({ createdAt: -1 })
     .exec()
     .then(quizzes => {
-      console.log(quizzes)
       res.json(quizzes)
     })
     .catch(err => {
@@ -34,7 +33,7 @@ const create = (req, res, next) => {
     .then(quiz => {
       Quiz.populate( quiz
                    , { path:   'author'
-                     , select: { _id: 1, username: 1 }
+                     , select: { _id: 1, username: 1, fullname: 1 }
                      }
                    )
         .then(quiz => {

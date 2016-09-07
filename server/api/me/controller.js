@@ -1,8 +1,34 @@
+const pick = require('lodash/pick')
+
 const User         = require('../user/model')
+const Quiz         = require('../quiz/model')
 const { logError } = require('../../util/logger')
 
 const show = (req, res) => {
-  res.json({ user: req.user })
+  Quiz
+    .find( { $or: [ { author: { $in: req.user.following } }
+                  , { author: req.user }
+                  ]
+           }
+         )
+    .populate( { path:   'author'
+               , select: { _id: 1, username: 1, fullname: 1 }
+               }
+             )
+    .sort({ createdAt: -1 })
+    .exec()
+    .then(quizzes => {
+      res.json( { me: pick( req.user
+                          , [ '_id', 'username', 'fullname', 'createdAt' ]
+                          )
+                , quizzes
+                }
+              )
+    })
+    .catch(err => {
+      logError(err)
+      next(err)
+    })
 }
 
 const getFollowing = (req, res) => {

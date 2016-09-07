@@ -5,6 +5,37 @@ const pick   = require('lodash/pick')
 const config = require('../config')
 const User   = require('../api/user/model')
 
+const getMe = () => (req, res, next) => {
+  if (req.query && req.query.hasOwnProperty('access_token'))
+    req.headers.authorization = `Bearer ${req.query.access_token}`
+
+  let token = ''
+
+  if (req.headers.authorization)
+    token = req.headers.authorization.split(' ')[1]
+
+  if (token) {
+    jwt.verify(token, config.secrets.jwt, (err, decoded) => {
+      if (err) next()
+      else {
+        User
+          .findById(decoded._id)
+          .select('following')
+          .exec()
+          .then(user => {
+            req.me = user
+            next()
+          })
+          .catch(err => {
+            logError(err)
+            next()
+          })
+      }
+    })
+  }
+  else next()
+}
+
 const decodeToken = () => (req, res, next) => {
   if (req.query && req.query.hasOwnProperty('access_token'))
     req.headers.authorization = `Bearer ${req.query.access_token}`
@@ -73,4 +104,4 @@ const signToken = _id =>
           , { expiresIn: config.expireTime }
           )
 
-module.exports = { decodeToken, getUser, verifyUser, signToken }
+module.exports = { getMe, decodeToken, getUser, verifyUser, signToken }
