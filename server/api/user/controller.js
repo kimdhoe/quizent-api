@@ -25,20 +25,20 @@ const params = (req, res, next, username) => {
 }
 
 const index = (req, res, next) => {
-  User.find().lean()
-    .select('_id username fullname')
-    .sort({ createdAt: -1 })
-    .exec()
-    .then(users => {
-      users = users.map(user =>
-        merge(user, { followed: req.user.following.indexOf(user._id) >= 0 })
-      )
-      res.json({ users })
-    })
-    .catch(err => {
+  User.findRandom({}, '_id username fullname', { limit: 10 }, (err, users) => {
+    if (err) {
       logError(err)
       next(err)
-    })
+    }
+
+    users = users.map(user =>
+      merge( user.toObject()
+           , { followed: req.user.following.indexOf(user._id) >= 0 }
+           )
+    )
+
+    res.json({ users })
+  })
 }
 
 const show = (req, res, next) => {
