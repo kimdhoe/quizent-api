@@ -1,4 +1,7 @@
-const Quiz = require('./model')
+const pick = require('lodash/pick')
+
+const Quiz         = require('./model')
+const validateQuiz = require('../../validations/quiz')
 const { logError } = require('../../util/logger')
 
 const index = (req, res, next) => {
@@ -24,30 +27,35 @@ const index = (req, res, next) => {
 }
 
 const create = (req, res, next) => {
-  const newQuiz = req.body
+  const quizData = pick(req.body, [ 'question', 'answer'])
 
-  newQuiz.author = req.user._id
+  const { errors, isValid } = validateQuiz(quizData)
 
-  Quiz
-    .create(newQuiz)
-    .then(quiz => {
-      Quiz.populate( quiz
-                   , { path:   'author'
-                     , select: { _id: 1, username: 1, fullname: 1 }
-                     }
-                   )
-        .then(quiz => {
-          res.json(quiz)
-        })
-        .catch(err => {
-          logError(err)
-          next(err)
-        })
-    })
-    .catch(err => {
-      logError(err)
-      next(err)
-    })
+  if (isValid) {
+    quizData.author = req.user._id
+
+    Quiz
+      .create(quizData)
+      .then(quiz => {
+        Quiz.populate( quiz
+                    , { path:   'author'
+                      , select: { _id: 1, username: 1, fullname: 1 }
+                      }
+                    )
+          .then(quiz => {
+            res.json(quiz)
+          })
+          .catch(err => {
+            logError(err)
+            next(err)
+          })
+      })
+      .catch(err => {
+        logError(err)
+        next(err)
+      })
+  }
+  else res.status(400).json({ errors })
 }
 
 module.exports = { index, create }
