@@ -4,6 +4,26 @@ const Quiz         = require('./model')
 const validateQuiz = require('../../validations/quiz')
 const { logError } = require('../../util/logger')
 
+const params = (req, res, next, id) => {
+  Quiz.findById(id)
+    .select('answer')
+    .exec()
+    .then(quiz => {
+      console.log(quiz)
+      if (!quiz)
+        next(new Error('No quiz with that id'))
+      else {
+        req.quiz = quiz
+        next()
+      }
+    })
+    .catch(err => {
+      legError(err)
+      next(err)
+    })
+}
+
+// !!!
 const index = (req, res, next) => {
   Quiz
     .find({ $or: [ { author: { $in: req.user.following } }
@@ -26,6 +46,7 @@ const index = (req, res, next) => {
     })
 }
 
+// Creates a new quiz.
 const create = (req, res, next) => {
   const quizData = pick(req.body, [ 'question', 'answer'])
 
@@ -58,4 +79,9 @@ const create = (req, res, next) => {
   else res.status(400).json({ errors })
 }
 
-module.exports = { index, create }
+// Determines whether a submitted answer is correct.
+const grade = (req, res, next) => {
+  res.json({ grade: { isCorrect: req.quiz.answer === req.body.answer.trim() } })
+}
+
+module.exports = { params, index, create, grade }
