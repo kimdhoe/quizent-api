@@ -48,7 +48,15 @@ const index = (req, res, next) => {
 
 // Creates a new quiz.
 const create = (req, res, next) => {
-  const quizData = pick(req.body, [ 'question', 'answer'])
+  const { isShortAnswer, question, answer, choices } = req.body
+
+  const quizData = pick(req.body, [ 'isShortAnswer', 'question', 'answer' ])
+
+  quizData.choices = isShortAnswer
+                       ? []
+                       : req.body.choices
+                           .map(choice => choice.trim())
+                           .filter(choice => choice)
 
   const { errors, isValid } = validateQuiz(quizData)
 
@@ -64,7 +72,9 @@ const create = (req, res, next) => {
                       }
                     )
           .then(quiz => {
-            res.json(quiz)
+            res.json(pick( quiz
+                         , ['isShortAnswer', 'question', 'choices', '_id', 'author', 'createdAt'])
+                         )
           })
           .catch(err => {
             logError(err)

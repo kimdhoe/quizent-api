@@ -20,15 +20,19 @@ const Schema = mongoose.Schema
 //                                              each string becomes a paragraph
 // }
 const QuizSchema =
-  new Schema( { question: { type:     String
-                          , required: true
-                          }
-              , answer:   { type:     String
-                          // , required: true
-                          }
-              , author:   { type:     Schema.Types.ObjectId
-                          , ref:      'user'
-                          }
+  new Schema( { isShortAnswer: { type:     Boolean
+                               , required: true
+                               }
+              , question:      { type:     String
+                               , required: true
+                               }
+              , answer:        { type:     String
+                               , required: true
+                               }
+              , choices:       [{ type: String }]
+              , author:        { type: Schema.Types.ObjectId
+                               , ref:  'user'
+                               }
               }
             , { timestamps: true }
             )
