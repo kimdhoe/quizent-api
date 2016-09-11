@@ -16,6 +16,10 @@ const validate = ({ isShortAnswer, question, answer, choices }) => {
     errors.choices = 'At least one choice is required.'
   }
 
+  if (!isShortAnswer && validator.isNull(answer)) {
+    errors.solution = 'Please mark the right answer.'
+  }
+
   return { errors
          , isValid: isEmpty(errors)
          }

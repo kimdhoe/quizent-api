@@ -48,6 +48,8 @@ const index = (req, res, next) => {
 
 // Creates a new quiz.
 const create = (req, res, next) => {
+  setTimeout(() => {
+
   const { isShortAnswer, question, answer, choices } = req.body
 
   const quizData = pick(req.body, [ 'isShortAnswer', 'question', 'answer' ])
@@ -87,6 +89,7 @@ const create = (req, res, next) => {
       })
   }
   else res.status(400).json({ errors })
+  }, 1500)
 }
 
 // Determines whether a submitted answer is correct.
