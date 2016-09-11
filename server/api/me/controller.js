@@ -11,6 +11,7 @@ const show = (req, res) => {
                   ]
            }
          )
+    .select('isShortAnswer question choices createdAt author')
     .populate( { path:   'author'
                , select: { _id: 1, username: 1, fullname: 1 }
                }
