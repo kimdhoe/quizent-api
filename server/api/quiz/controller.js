@@ -48,8 +48,6 @@ const index = (req, res, next) => {
 
 // Creates a new quiz.
 const create = (req, res, next) => {
-  setTimeout(() => {
-
   const { isShortAnswer, question, answer, choices } = req.body
 
   const quizData = pick(req.body, [ 'isShortAnswer', 'question', 'answer' ])
@@ -89,7 +87,20 @@ const create = (req, res, next) => {
       })
   }
   else res.status(400).json({ errors })
-  }, 1500)
+}
+
+// Deletes a quiz with an _id: req.quiz._id.
+const destroy = (req, res, next) => {
+  Quiz
+    .remove({ _id: req.quiz._id })
+    .then(x => {
+      res.send({ quiz: { _id: req.quiz._id } })
+    })
+    .catch(err => {
+      logError(err)
+      next(err)
+    })
+
 }
 
 // Determines whether a submitted answer is correct.
@@ -97,4 +108,9 @@ const grade = (req, res, next) => {
   res.json({ grade: { isCorrect: req.quiz.answer === req.body.answer.trim() } })
 }
 
-module.exports = { params, index, create, grade }
+module.exports = { params
+                 , index
+                 , create
+                 , destroy
+                 , grade
+                 }
