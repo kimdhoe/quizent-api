@@ -11,6 +11,7 @@ const show = (req, res) => {
                   ]
            }
          )
+    .limit(10)
     .select('isShortAnswer question choices createdAt author')
     .populate( { path:   'author'
                , select: { _id: 1, username: 1, fullname: 1 }
@@ -25,6 +26,47 @@ const show = (req, res) => {
                 , quizzes
                 }
               )
+    })
+    .catch(error => {
+      logError(error)
+      res.status(500).json({ error })
+    })
+}
+
+const checkLatestQuizzes = (req, res, next) => {
+  Quiz
+    .count( { $or: [ { author: { $in: req.user.following } }
+                   , { author: req.user }
+                   ]
+            , createdAt: { $gt: req.query.lastDate }
+            }
+          )
+    .then(nNewQuizzes => {
+      res.json({ nNewQuizzes })
+    })
+    .catch(err => {
+      logError(err)
+      next(err)
+    })
+}
+
+const fetchLatestQuizzes = (req, res, next) => {
+  Quiz
+    .find( { $or: [ { author: { $in: req.user.following } }
+                  , { author: req.user }
+                  ]
+           , createdAt: { $gt: req.query.lastDate }
+           }
+         )
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .populate({ path:   'author'
+              , select: { _id: 1, username: 1, fullname: 1 }
+              }
+             )
+    .exec()
+    .then(quizzes => {
+      res.json({ quizzes })
     })
     .catch(err => {
       logError(err)
@@ -74,4 +116,10 @@ const unfollow = (req, res) => {
     })
 }
 
-module.exports = { show, getFollowing, follow, unfollow }
+module.exports = { show
+                 , getFollowing
+                 , follow
+                 , unfollow
+                 , checkLatestQuizzes
+                 , fetchLatestQuizzes
+                 }

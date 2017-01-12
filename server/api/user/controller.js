@@ -2,6 +2,7 @@ const bcrypt  = require('bcrypt')
 const isEmpty = require('lodash/isEmpty')
 const merge   = require('lodash/merge')
 const pick    = require('lodash/pick')
+const co      = require('co')
 
 const User          = require('./model')
 const Quiz          = require('../quiz/model')
@@ -44,6 +45,7 @@ const index = (req, res, next) => {
 const show = (req, res, next) => {
   Quiz
     .find({ author: req.shownUser._id })
+    .limit(10)
     .populate({ path:   'author'
               , select: { _id: 1, username: 1, fullname: 1 }
               }
@@ -59,6 +61,42 @@ const show = (req, res, next) => {
       )
 
       res.json({ user, quizzes })
+    })
+    .catch(err => {
+      logError(err)
+      next(err)
+    })
+}
+
+const checkLatestQuizzes = (req, res, next) => {
+  co(function* () {
+    const nNewQuizzes = yield Quiz.count({ author:    req.shownUser._id
+                                         , createdAt: { $gt: req.query.lastDate }
+                                         }
+                                        ).exec()
+    res.json({ nNewQuizzes })
+  })
+    .catch(err => {
+      logError(err)
+      next(err)
+    })
+}
+
+const latestQuizzes = (req, res, next) => {
+  Quiz
+    .find({ author:    req.shownUser._id
+          , createdAt: { $gt: req.query.lastDate  }
+          }
+         )
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .populate({ path:   'author'
+              , select: { _id: 1, username: 1, fullname: 1 }
+              }
+             )
+    .exec()
+    .then(quizzes => {
+      res.json({ quizzes })
     })
     .catch(err => {
       logError(err)
@@ -117,4 +155,5 @@ const create = (req, res, next) => {
     })
 }
 
-module.exports = { params, index, show, create }
+module.exports = { params, index, show, create, latestQuizzes
+  , checkLatestQuizzes }

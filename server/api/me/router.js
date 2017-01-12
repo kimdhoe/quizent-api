@@ -3,6 +3,8 @@ const express = require('express')
 const { decodeToken
       , getUser } = require('../../auth/auth')
 const { show
+      , checkLatestQuizzes
+      , fetchLatestQuizzes
       , getFollowing
       , follow
       , unfollow } = require('./controller')
@@ -10,6 +12,9 @@ const { show
 const router = express.Router()
 
 router.get('/', decodeToken(), getUser(), show)
+
+router.get('/check',  decodeToken(), getUser(), checkLatestQuizzes)
+router.get('/latest', decodeToken(), getUser(), fetchLatestQuizzes)
 
 router.get('/following', decodeToken(), getUser(), getFollowing)
 
