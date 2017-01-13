@@ -1,7 +1,7 @@
 {
-  "name": "auth-example-api",
+  "name": "quizent-api",
   "version": "0.0.1",
-  "description": "API for JWT-based authentication example",
+  "description": "Quiz SNS",
   "main": "index.js",
   "scripts": {
     "start": "nodemon server/index.js",
