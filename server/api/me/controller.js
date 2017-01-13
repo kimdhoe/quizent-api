@@ -33,6 +33,30 @@ const show = (req, res) => {
     })
 }
 
+const fetchMoreQuizzes = (req, res, next) => {
+  Quiz
+    .find( { $or: [ { author: { $in: req.user.following } }
+                  , { author: req.user }
+                  ]
+           , createdAt: { $lt: req.query.firstDate }
+           }
+         )
+  .sort({ createdAt: -1 })
+  .limit(10)
+  .populate({ path:   'author'
+            , select: { _id: 1, username: 1, fullname: 1 }
+            }
+           )
+  .exec()
+  .then(quizzes => {
+    res.json({ quizzes })
+  })
+  .catch(err => {
+    logError(err)
+    next(err)
+  })
+}
+
 const checkLatestQuizzes = (req, res, next) => {
   Quiz
     .count( { $or: [ { author: { $in: req.user.following } }
@@ -122,4 +146,5 @@ module.exports = { show
                  , unfollow
                  , checkLatestQuizzes
                  , fetchLatestQuizzes
+                 , fetchMoreQuizzes
                  }

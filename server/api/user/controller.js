@@ -68,6 +68,30 @@ const show = (req, res, next) => {
     })
 }
 
+const fetchMoreQuizzes = (req, res, next) => {
+  Quiz
+    .find({ author:    req.shownUser._id
+          , createdAt: { $lt: req.query.firstDate }
+          }
+         )
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .populate({ path:   'author'
+              , select: { _id: 1, username: 1, fullname: 1 }
+              }
+             )
+    .exec()
+    .then(quizzes => {
+      res.json({ quizzes })
+    })
+    .catch(err => {
+      logError(err)
+      next(err)
+    })
+
+}
+
+
 const checkLatestQuizzes = (req, res, next) => {
   co(function* () {
     const nNewQuizzes = yield Quiz.count({ author:    req.shownUser._id
@@ -155,5 +179,11 @@ const create = (req, res, next) => {
     })
 }
 
-module.exports = { params, index, show, create, latestQuizzes
-  , checkLatestQuizzes }
+module.exports = { params
+                 , index
+                 , show
+                 , create
+                 , latestQuizzes
+                 , checkLatestQuizzes
+                 , fetchMoreQuizzes
+                 }

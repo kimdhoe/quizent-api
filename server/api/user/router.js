@@ -1,8 +1,15 @@
 const express = require('express')
 
-const { decodeToken, getUser, getMe }             = require('../../auth/auth')
-const { params, index, create, show, latestQuizzes
-  , checkLatestQuizzes } = require('./controller')
+const { decodeToken
+      , getUser
+      , getMe }            = require('../../auth/auth')
+const { params
+      , index
+      , create
+      , show
+      , latestQuizzes
+      , checkLatestQuizzes
+      , fetchMoreQuizzes } = require('./controller')
 
 const router = express.Router()
 
@@ -20,5 +27,8 @@ router.route('/:username/check')
 
 router.route('/:username/latest')
   .get(getMe(), latestQuizzes)
+
+router.route('/:username/more')
+.get(getMe(), fetchMoreQuizzes)
 
 module.exports = router

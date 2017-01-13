@@ -5,6 +5,7 @@ const { decodeToken
 const { show
       , checkLatestQuizzes
       , fetchLatestQuizzes
+      , fetchMoreQuizzes
       , getFollowing
       , follow
       , unfollow } = require('./controller')
@@ -15,6 +16,7 @@ router.get('/', decodeToken(), getUser(), show)
 
 router.get('/check',  decodeToken(), getUser(), checkLatestQuizzes)
 router.get('/latest', decodeToken(), getUser(), fetchLatestQuizzes)
+router.get('/more',   decodeToken(), getUser(), fetchMoreQuizzes)
 
 router.get('/following', decodeToken(), getUser(), getFollowing)
 
