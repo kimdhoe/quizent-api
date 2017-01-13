@@ -4,7 +4,7 @@
   "description": "Quiz SNS",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index.js",
+    "start": "node server/index.js",
     "dev": "nodemon --watch src --exec babel-node -- src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
