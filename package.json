@@ -11,6 +11,9 @@
   "keywords": [],
   "author": "kimdhoe <kimdhoe1@gmail.com>",
   "license": "ISC",
+  "engines": {
+    "node": "6.9.1"
+  },
   "dependencies": {
     "bcrypt": "^0.8.7",
     "body-parser": "^1.15.2",
