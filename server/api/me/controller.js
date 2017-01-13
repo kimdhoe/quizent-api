@@ -58,13 +58,16 @@ const fetchMoreQuizzes = (req, res, next) => {
 }
 
 const checkLatestQuizzes = (req, res, next) => {
+  const query = { $or: [ { author: { $in: req.user.following } }
+                       , { author: req.user }
+                       ]
+                }
+
+  if (req.query.lastDate)
+    query.createdAt = { $gt: req.query.lastDate }
+
   Quiz
-    .count( { $or: [ { author: { $in: req.user.following } }
-                   , { author: req.user }
-                   ]
-            , createdAt: { $gt: req.query.lastDate }
-            }
-          )
+    .count(query)
     .then(nNewQuizzes => {
       res.json({ nNewQuizzes })
     })
@@ -75,13 +78,16 @@ const checkLatestQuizzes = (req, res, next) => {
 }
 
 const fetchLatestQuizzes = (req, res, next) => {
+  const query = { $or: [ { author: { $in: req.user.following } }
+                       , { author: req.user }
+                       ]
+                }
+
+  if (req.query.lastDate)
+    query.createdAt = { $gt: req.query.lastDate }
+
   Quiz
-    .find( { $or: [ { author: { $in: req.user.following } }
-                  , { author: req.user }
-                  ]
-           , createdAt: { $gt: req.query.lastDate }
-           }
-         )
+    .find(query)
     .sort({ createdAt: -1 })
     .limit(10)
     .populate({ path:   'author'

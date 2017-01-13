@@ -94,10 +94,12 @@ const fetchMoreQuizzes = (req, res, next) => {
 
 const checkLatestQuizzes = (req, res, next) => {
   co(function* () {
-    const nNewQuizzes = yield Quiz.count({ author:    req.shownUser._id
-                                         , createdAt: { $gt: req.query.lastDate }
-                                         }
-                                        ).exec()
+    const query = { author: req.shownUser._id }
+
+    if (req.query.lastDate)
+      query.createdAt = { $gt: req.query.lastDate }
+
+    const nNewQuizzes = yield Quiz.count(query).exec()
     res.json({ nNewQuizzes })
   })
     .catch(err => {
@@ -107,11 +109,13 @@ const checkLatestQuizzes = (req, res, next) => {
 }
 
 const latestQuizzes = (req, res, next) => {
+  const query = { author: req.shownUser._id }
+
+  if (req.query.lastDate)
+    query.createdAt = { $gt: req.query.lastDate }
+
   Quiz
-    .find({ author:    req.shownUser._id
-          , createdAt: { $gt: req.query.lastDate  }
-          }
-         )
+    .find(query)
     .sort({ createdAt: -1 })
     .limit(10)
     .populate({ path:   'author'
